@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--	automatically scan the com enterprise package， context:component-scan tag to say that Spring have to scan my file searching the annotation, so for example, when the controller class finds that a method is annotated by @RequestMapping("/hello") annotation knows that this method handles the HTTP Request toward the URL ending with "/hello".-->
+    <context:component-scan base-package="com.enterprise"/>
+    <!-- Configuring MultipartResolver for file uploading Using Spring's CommosMultipartResolver -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="1048576"/><!--最大1M-->
+    </bean>
+<!--	conversionService-->
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean"></bean>
+<!--	Indicates that some comments can be used in the Java class, such as requestMapping, etc.-->
+<!--Specify conversion-service as the default FormattingConversionServiceFactoryBean-->
+    <mvc:annotation-driven conversion-service="conversionService">
+        <mvc:message-converters register-defaults="true">
+<!--configuring annotation driven properties-->
+            <bean id="messageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean id="jsonHttpMesaageConverter"
+                  class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+<!--	Spring caches no resources. But there is a possibility in order to allow resources to be cached.
+
+You can specify cache-period(to send cache headers with a given max-age value) E.g.-->
+    <mvc:resources mapping="/resource/**" location="/resource/" cache-period="86400"/>
+    <mvc:resources mapping="/attached/**" location="/attached/" cache-period="86400"/>
+<!--    Using this handler spring dispatcher will forward all requests to the default Servlet-->
+<!--    When you want spring dispatcher to serve static resources under the web root using default servlet.-->
+<!--    If we are using DefaultServletHttpRequestHandler, then we can replace :
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/images/**" location="/images/" />
+with :
+<mvc:default-servlet-handler />-->
+    <mvc:default-servlet-handler/>
+
+<!--    Configure messageSource-->
+<!--    Configuration internationalization-->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+<!--        Sometimes the term internationalization is abbreviated as i18n, because there are 18 letters between the first "i" and the last "n."-->
+        <property name="basename" value="i18n"/>
+    </bean>
+
+<!--    Configuration attempt parser-->
+    <bean id="viewResolverCommon" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/><!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑  -->
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+<!--        Priority loading-->
+        <property name="order" value="0"/>
+    </bean>
+</beans>

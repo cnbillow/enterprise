@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_9" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <display-name>Archetype Created Web Application</display-name>
+<!--	对上下文的监听器-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+<!--	配置上下文的属性，引入配置文件的位置-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:spring/applicationContext.xml</param-value>
+    </context-param>
+<!--	配置spring mvc的servlet-->
+    <servlet>
+        <description>spring mvc servlet</description>
+        <servlet-name>springMvc</servlet-name>
+        <servlet-class>com.enterprise.core.servlet.MultipartDispatcherServlet</servlet-class>
+        <init-param>
+<!--            Customize the address of the springmvc configuration file-->
+            <description>spring mvc conf</description>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:spring/spring-mvc.xml</param-value>
+        </init-param>
+<!--        priority to load this servlet of springmvc-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+<!--	表明对所有地址都进行，并且在这儿不用将其配置文件写成springMvc.xml，因为配置了初始属性，指定了spring mvc conf的地址-->
+    <servlet-mapping>
+        <servlet-name>springMvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+<!--	配置过滤器，防止中文乱码-->
+    <filter>
+        <filter-name>Set Character Encoding</filter-name>
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+<!--	对所有地址都进行过滤-->
+    <filter-mapping>
+        <filter-name>Set Character Encoding</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+<!--	配置监听器，指明监听器的java类地址，用java代码进行配置-->
+    <listener>
+        <listener-class>com.enterprise.listener.SystemListener</listener-class>
+    </listener>
+<!--	配置404错误页面-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
+<!--	配置500错误页面-->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+<!--	配置jsp的配置-->
+<!--	web.xml is validated against an XML schema. This schema specifies that taglib can occur only when enclosed by a jsp-config tag.
+
+Hence surround your taglib tag by a jsp-config tag
+
+Please Refer: http://docs.oracle.com/cd/E11035_01/wls100/webapp/web_xml.html#wp1071166
+
+for further details.
+
+Also taglib is no longer required to be declared in web.xml , please read http://wiki.metawerx.net/wiki/RemovingTaglibFromWeb.xml-->
+<!--	The jsp-config element is used to provide global configuration information for the JSP files in a Web application. It has two sub-elements, taglib and jsp-property-group.-->
+    <jsp-config>
+        <taglib>
+            <taglib-uri>
+                http://jsptags.com/tags/navigation/pager
+            </taglib-uri>
+            <taglib-location>
+                /WEB-INF/pager-taglib.tld
+            </taglib-location>
+        </taglib>
+    </jsp-config>
+</web-app>

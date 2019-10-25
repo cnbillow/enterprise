@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!--configuration cache-->
+
+    <!--    introducing a configuration file-->
+    <context:property-placeholder location="classpath:conf.properties"/>
+
+    <!--    Give the system management class to spring to manage, specify ehcacheCacheProvider-->
+    <bean id="systemManage" class="com.enterprise.core.SystemManage">
+        <property name="cacheProvider" ref="ehcacheCacheProvider"/>
+    </bean>
+    <!--cache operation class simplecacheprovider-->
+    <bean id="simpleCacheProvier" class="com.enterprise.cache.SimpleCacheProvider"/>
+    <!--cache operation class ehcachecacheprovider-->
+    <bean id="ehcacheCacheProvider" class="com.enterprise.cache.EhcacheCacheProvider">
+        <property name="configLocation" value="classpath:ehcache.xml"></property>
+        <property name="cacheName" value="eternalCache"/>
+    </bean>
+
+
+</beans>
